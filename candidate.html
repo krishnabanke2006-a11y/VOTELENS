@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Portal - VoteLens</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-light">
+    <nav class="navbar glass dark-nav">
+        <div class="nav-container">
+             <a href="index.html" class="logo text-white">
+                <i class="fa-solid fa-eye text-saffron"></i> Vote<span class="text-blue">Lens</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="text-white">Citizen View</a>
+                <a href="#" class="active text-saffron">Candidate Portal</a>
+            </div>
+            <div class="user-profile">
+                <span class="candidate-name">Hon. Rajesh Kumar</span>
+                <i class="fa-solid fa-user-circle"></i>
+            </div>
+        </div>
+    </nav>
+
+    <main class="candidate-dashboard section">
+        <header class="dashboard-header">
+            <div>
+                <h2>Welcome back, <span class="text-blue">Rajesh Kumar</span></h2>
+                <p>Constituency: <strong>North District</strong></p>
+            </div>
+            <button class="btn btn-primary" id="new-proposal-btn"><i class="fa-solid fa-plus"></i> Submit New Proposal</button>
+        </header>
+
+        <section class="metrics-grid">
+            <div class="metric-card glass-card">
+                <div class="metric-icon bg-blue-light"><i class="fa-solid fa-file-signature text-blue"></i></div>
+                <div class="metric-info">
+                    <h4>Total Promises</h4>
+                    <h2>14</h2>
+                </div>
+            </div>
+            <div class="metric-card glass-card">
+                <div class="metric-icon bg-success-light"><i class="fa-solid fa-check-double text-success"></i></div>
+                <div class="metric-info">
+                    <h4>Completed</h4>
+                    <h2>8</h2>
+                </div>
+            </div>
+            <div class="metric-card glass-card">
+                <div class="metric-icon bg-warning-light"><i class="fa-solid fa-hourglass-half text-warning"></i></div>
+                <div class="metric-info">
+                    <h4>Pending/Active</h4>
+                    <h2>6</h2>
+                </div>
+            </div>
+            <div class="metric-card glass-card border-saffron">
+                <div class="metric-icon bg-saffron-light"><i class="fa-solid fa-star text-saffron"></i></div>
+                <div class="metric-info">
+                    <h4>Overall Rating</h4>
+                    <h2 class="text-saffron">8.5/10</h2>
+                </div>
+            </div>
+        </section>
+
+        <!-- New Proposal Form -->
+        <section id="proposal-form-section" class="form-section glass-card hidden mt-4">
+            <div class="section-header">
+                <h3>Submit an <span class="text-saffron">Official Promise</span> / Project</h3>
+                <p>Once submitted, this will be tracked publicly. Upon the deadline passing, citizens will verify completion.</p>
+            </div>
+            
+            <form id="proposal-form">
+                <div class="form-grid">
+                    <div class="form-group col-span-2">
+                        <label for="p-title">Project Title</label>
+                        <input type="text" id="p-title" class="form-control" placeholder="e.g., Repair Main Road Network" required>
+                    </div>
+
+                    <div class="form-group col-span-2">
+                        <label for="p-desc">Detailed Description</label>
+                        <textarea id="p-desc" class="form-control" rows="4" placeholder="Describe the specifics of the development work..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="p-constituency">Constituency</label>
+                        <input type="text" id="p-constituency" class="form-control" value="North District" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="p-deadline">Estimated Completion Date</label>
+                        <input type="date" id="p-deadline" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-actions mt-3">
+                    <button type="button" class="btn btn-outline" id="cancel-proposal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="submit-proposal">Submit Publicly</button>
+                    <div id="proposal-success-msg" class="success-message hidden">
+                        <i class="fa-solid fa-check-circle"></i> Proposal submitted successfully!
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <section class="candidate-projects mt-5">
+            <h3>Your Promises / Track Record</h3>
+            <div class="table-container glass-card">
+                <table class="projects-table" id="candidate-projects-table">
+                    <thead>
+                        <tr>
+                            <th>Project Title</th>
+                            <th>Status</th>
+                            <th>Deadline / End Date</th>
+                            <th>Citizen Rating</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="candidate-table-body">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+    <script>
+        // Form Toggle logic
+        document.getElementById('new-proposal-btn').addEventListener('click', () => {
+            document.getElementById('proposal-form-section').classList.remove('hidden');
+        });
+        document.getElementById('cancel-proposal').addEventListener('click', () => {
+            document.getElementById('proposal-form-section').classList.add('hidden');
+        });
+        
+        // Handle Submission Mock
+        document.getElementById('proposal-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submit-proposal');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                document.getElementById('proposal-success-msg').classList.remove('hidden');
+                btn.innerHTML = 'Submit Publicly';
+                btn.disabled = false;
+                e.target.reset();
+                
+                // Add randomly to table for UI effect
+                const tbody = document.getElementById('candidate-table-body');
+                const title = document.getElementById('p-title').value || "New Project";
+                const date = document.getElementById('p-deadline').value || "2026-12-31";
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${title}</strong><br><small class="text-light">Just added</small></td>
+                    <td><span class="badge badge-blue">In Progress</span></td>
+                    <td>${date}</td>
+                    <td>-</td>
+                    <td><button class="btn btn-sm btn-outline">Update Details</button></td>
+                `;
+                tbody.prepend(row);
+                
+                setTimeout(() => {
+                    document.getElementById('proposal-form-section').classList.add('hidden');
+                    document.getElementById('proposal-success-msg').classList.add('hidden');
+                }, 2000);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
